@@ -13,6 +13,9 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Rooms", href: "/rooms" },
+    {label: "Add Room", href:'/AddRoom'},
+    {label: "My Listing", href:'/MyListing'},
+    {label: "My Bookings", href:'/MyBookings'},
   ];
 
   const links = navLinks.map((link, index) => (
