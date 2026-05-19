@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { Books } from "@gravity-ui/icons";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -67,28 +68,9 @@ const Navbar = () => {
         >
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl text-[#C9A96E] font-serif tracking-wide"
+            className="flex items-center gap-1   font-bold text-xl text-[#C9A96E] font-serif tracking-wide"
           >
-            {/* Book icon inline SVG */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.6}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6v12M6 3h12a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 3v18M6 7h3M6 11h3M6 15h3"
-              />
-            </svg>
+           <Books></Books>
             StudyNook
           </Link>
         </motion.div>
