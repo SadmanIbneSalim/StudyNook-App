@@ -1,14 +1,16 @@
-import React from 'react';
-import {Spinner} from "@heroui/react";
+import React from "react";
+import { Spinner } from "@heroui/react";
+
 const LoadingPage = () => {
-    return (
-        <div>
-            <div className="flex flex-col items-center gap-2">
-        <Spinner size="lg" />
-        <span className="text-xs text-muted">Large</span>
-      </div>
-        </div>
-    );
+  return (
+    <div className="bg-[#F5EDD8] min-h-screen flex flex-col justify-center items-center gap-3">
+      <Spinner size="lg" className="text-[#3B2F1E]" />
+
+      <span className="text-sm font-medium text-[#7A5C38] tracking-wider animate-pulse">
+        Loading StudyNook...
+      </span>
+    </div>
+  );
 };
 
 export default LoadingPage;

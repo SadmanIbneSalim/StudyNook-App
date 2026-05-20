@@ -29,32 +29,22 @@ const amenityOptions = [
 const AddRoom = () => {
   const [amenities, setAmenities] = useState([]);
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
     const newRoom = { ...data, amenities };
     console.log("Room payload:", newRoom);
     // TODO: POST to /api/rooms
 
-const res= await fetch(`http://localhost:2001/rooms`,{
-    method: "POST",
-    headers: {
- 
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(newRoom),
-  });
-  const roomData=await res.json();
-  console.log(roomData);
-
-
-
-
-
-
-
-
-    
+    const res = await fetch(`http://localhost:2001/rooms`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newRoom),
+    });
+    const roomData = await res.json();
+    console.log(roomData);
   };
 
   return (
@@ -214,7 +204,7 @@ const res= await fetch(`http://localhost:2001/rooms`,{
                         key={a.value}
                         className={`flex items-center gap-2 border rounded-xl px-4 py-3 cursor-pointer transition-all select-none text-sm font-medium ${
                           checked
-                            ? "border-[#C9A96E] bg-[#C9A96E]/10 text-[#3B2F1E]"
+                            ? "border-[#C9A96E] bg-[#C9A96E] text-white"
                             : "border-[#d1c8b0] bg-white text-[#7A5C38] hover:border-[#C9A96E]/60"
                         }`}
                       >
@@ -232,7 +222,6 @@ const res= await fetch(`http://localhost:2001/rooms`,{
               <Button
                 type="reset"
                 variant="secondary"
-          
                 onPress={() => setAmenities([])}
                 className="border border-[#3B2F1E] text-[#3B2F1E] bg-transparent rounded-full px-8 py-2 font-semibold text-sm hover:bg-[#EDE8DF] transition-colors"
               >
