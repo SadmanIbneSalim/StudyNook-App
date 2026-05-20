@@ -15,6 +15,7 @@ import {
   TextArea,
   TextField,
 } from "@heroui/react";
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
 const amenityOptions = [
@@ -34,7 +35,7 @@ const AddRoom = () => {
     const data = Object.fromEntries(new FormData(e.currentTarget));
     const newRoom = { ...data, amenities };
     console.log("Room payload:", newRoom);
-    // TODO: POST to /api/rooms
+    
 
     const res = await fetch(`http://localhost:2001/rooms`, {
       method: "POST",
@@ -44,7 +45,7 @@ const AddRoom = () => {
       body: JSON.stringify(newRoom),
     });
     const roomData = await res.json();
-    console.log(roomData);
+    redirect('/rooms');
   };
 
   return (

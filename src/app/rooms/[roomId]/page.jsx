@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Button, Chip } from '@heroui/react';
 import { div } from 'framer-motion/client';
 import { ModalForm } from '@/components/modal';
+import { DeleteData } from '@/components/delete';
 
 export default async function DetailsPage({ params }) {
   const { roomId } = await params;
@@ -60,9 +61,7 @@ export default async function DetailsPage({ params }) {
 
           <div className="flex gap-3 mt-3">
            <ModalForm data={data}></ModalForm>
-            <Button variant="danger" color="danger" className="w-full" radius="md">
-              Delete
-            </Button>
+           <DeleteData data={data}></DeleteData>
           </div>
         </div>
 

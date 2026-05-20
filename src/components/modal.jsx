@@ -17,6 +17,7 @@ import {
   TextArea,
   TextField,
 } from "@heroui/react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 const amenityOptions = [
@@ -45,9 +46,10 @@ export function ModalForm({ data }) {
     const result = await res.json();
     console.log("Updated:", result);
     // TODO: toast success + close modal
-  } catch (err) {
+} catch (err) {
     console.error("Update failed:", err);
-  }
+}
+redirect(`/rooms/${data._id}`)
 };
 
   return (

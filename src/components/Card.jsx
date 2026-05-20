@@ -23,7 +23,7 @@ export default function RoomCard({ data }) {
           alt={name}
           width={500}
           height={250}
-          className="h-full w-full object-cover"
+          className=" object-cover"
         />
       </figure>
 
