@@ -66,8 +66,8 @@ redirect(`/rooms/${data._id}`)
               <Modal.Icon className="bg-accent-soft text-accent-soft-foreground">
                 <PencilToSquare className="size-5" />
               </Modal.Icon>
-              <Modal.Heading>Edit </Modal.Heading>
-              <p className="mt-1.5 text-sm leading-5 text-muted">
+              <Modal.Heading className="text-2xl">Edit </Modal.Heading>
+              <p className="mt-1.5 leading-5 text-lg text-muted">
                 Update your information
               </p>
             </Modal.Header>

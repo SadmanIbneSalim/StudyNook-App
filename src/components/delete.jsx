@@ -28,7 +28,7 @@ console.log(roomData);
       <AlertDialog.Backdrop  className="bg-linear-to-t from-black/80 via-black/40 to-transparent dark:from-zinc-800/80 dark:via-zinc-800/40"
         variant="blur">
         <AlertDialog.Container>
-          <AlertDialog.Dialog className="sm:max-w-200">
+          <AlertDialog.Dialog className="sm:max-w-150">
             <AlertDialog.CloseTrigger />
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />

@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { Button, Chip } from '@heroui/react';
-import { div } from 'framer-motion/client';
 import { ModalForm } from '@/components/modal';
 import { DeleteData } from '@/components/delete';
 
@@ -13,60 +12,88 @@ export default async function DetailsPage({ params }) {
   const data = await res.json();
 
   return (
-    <div className='bg-[#F5EDD8] '>
+    <div className="min-h-screen bg-[#F5EDD8]">
+      <div className="max-w-6xl mx-auto py-14 px-5">
+        <div className="grid md:grid-cols-2 gap-10 items-start">
 
-    <div className="max-w-7xl mx-auto py-10 px-5">
-      <div className="grid md:grid-cols-2 py-10 gap-8 items-center">
-
-        {/* Image */}
-        <div className="bg-gray-100 h-20 p-5 rounded-xl">
-          <Image
-            width={600}
-            height={600}
-            src={data.image}
-            alt={data.name}
-            className="w-full h-auto object-cover rounded-lg"
-          />
-        </div>
-
-        {/* Details */}
-        <div>
-          <h2 className="text-3xl font-bold mb-3">{data.name}</h2>
-
-          <p className="text-gray-500 mb-2">
-            Floor: <span className="font-semibold text-gray-700">{data.floor}</span>
-          </p>
-
-          <p className="text-gray-500 mb-2">
-            Capacity: <span className="font-semibold text-gray-700">{data.capacity} guests</span>
-          </p>
-
-          <p className="text-xl font-bold text-orange-500 mb-3">
-            $ {data.rate} / Hour
-          </p>
-
-          <p className="text-gray-600 mb-4">{data.description}</p>
-
-          <div className="mb-5">
-            
+          {/* Image */}
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-[#e0d4bc]">
+            <Image
+              width={900}
+              height={900}
+              src={data.image}
+              alt={data.name}
+              className="w-full h-[520px] object-cover"
+            />
           </div>
 
-          <Button
-            className="w-full font-bold text-white `!bg-[#5a4a38]`"
-            size="lg"
-            radius="md"
-          >
-            Book Now
-          </Button>
+          {/* Details */}
+          <div className="flex flex-col gap-5">
 
-          <div className="flex gap-3 mt-3">
-           <ModalForm data={data}></ModalForm>
-           <DeleteData data={data}></DeleteData>
+            {/* Name */}
+            <h2 className="text-4xl font-bold text-[#2e1f0e]">{data.name}</h2>
+
+            {/* Floor & Capacity badges */}
+            <div className="flex gap-3 flex-wrap">
+              <Chip
+                className="bg-[#efe3ca] text-[#5a4a38] border border-[#d4c4a8] font-medium"
+                size="md"
+              >
+                🏢 Floor {data.floor}
+              </Chip>
+              <Chip
+                className="bg-[#efe3ca] text-[#5a4a38] border border-[#d4c4a8] font-medium"
+                size="md"
+              >
+                👥 {data.capacity} guests
+              </Chip>
+            </div>
+
+            {/* Rate */}
+            <p className="text-3xl font-bold text-orange-500">
+              ${data.rate}
+              <span className="text-base font-normal text-gray-400 ml-1">/ Hour</span>
+            </p>
+
+            {/* Divider */}
+            <div className="w-full h-px bg-[#d4c4a8]" />
+
+            {/* Description */}
+            <p className="text-gray-600 leading-relaxed text-sm">{data.description}</p>
+
+            {/* Amenities */}
+            {data.amenities?.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {data.amenities.map((item, index) => (
+                  <Chip
+                    key={index}
+                    size="sm"
+                    className="bg-white text-[#5a4a38] border border-[#d4c4a8]"
+                  >
+                    {item}
+                  </Chip>
+                ))}
+              </div>
+            )}
+
+            {/* Book Now */}
+            <Button
+              className="w-full font-bold text-white bg-[#5a4a38]"
+              size="lg"
+              radius="md"
+            >
+              Book Now
+            </Button>
+
+            {/* Edit / Delete */}
+            <div className="flex gap-3">
+              <ModalForm data={data} />
+              <DeleteData data={data} />
+            </div>
+
           </div>
         </div>
-
       </div>
-    </div>
     </div>
   );
 }

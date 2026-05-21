@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Books } from "@gravity-ui/icons";
 
 const Navbar = () => {
@@ -183,20 +183,19 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <Link
-                href="/signin"
-                onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-center text-[#C9A96E] border border-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#C9A96E]/10 transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setMenuOpen(false)}
-                className="text-sm font-semibold text-center text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors"
-              >
-                Register
-              </Link>
+            <Link
+  href="/authentication/signin"
+  onClick={() => setMenuOpen(false)}
+>
+  Login
+</Link>
+
+<Link
+  href="/authentication/signup"
+  onClick={() => setMenuOpen(false)}
+>
+  Register
+</Link>
             </motion.div>
           </motion.div>
         )}
