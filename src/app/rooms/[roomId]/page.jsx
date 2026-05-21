@@ -4,13 +4,24 @@ import { ModalForm } from '@/components/modal';
 import { DeleteData } from '@/components/delete';
 import BookingModal from '@/components/BookNowModal';
 import BookNowModal from '@/components/BookNowModal';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export default async function DetailsPage({ params }) {
   const { roomId } = await params;
 
-  const res = await fetch(`http://localhost:2001/rooms/${roomId}`, {
-    cache: 'no-store',
-  });
+ const session = await auth.api.getSession({
+  headers:await headers()
+ })
+ const token=session?.session?.token
+
+const res = await fetch(`http://localhost:2001/rooms/${roomId}`, {
+  cache: 'no-store',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}` 
+  }
+});
   const data = await res.json();
 
   return (

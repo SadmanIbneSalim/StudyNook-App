@@ -3,6 +3,7 @@ import "./globals.css";
 
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import { ToastContainer } from "react-toastify";
 
 
 const roboto = Roboto({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
   </main>
 
   <Footer />
+  <ToastContainer />
 </body>
     </html>
   );

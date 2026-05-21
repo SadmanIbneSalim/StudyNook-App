@@ -11,6 +11,8 @@ import {
   TimeField,
 } from "@heroui/react";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 
 const BookNowModal = ({ data }) => {
   const { data: session } = authClient.useSession();
@@ -59,6 +61,7 @@ const BookNowModal = ({ data }) => {
     });
     const result = await res.json();
     console.log("Response:", result);
+   toast.success("Room booked successfully!");
   };
 
   return (
