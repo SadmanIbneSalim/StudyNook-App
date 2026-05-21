@@ -1,24 +1,39 @@
 "use client";
-
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Books } from "@gravity-ui/icons";
+import { Button } from "@heroui/react";
+import Image from "next/image";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const { data: session } = authClient.useSession();
+  const isLoggedIn = !!session?.user;
+
   const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Rooms", href: "/rooms" },
-    {label: "Add Room", href:'/AddRoom'},
-    {label: "My Listing", href:'/MyListing'},
-    {label: "My Bookings", href:'/MyBookings'},
+    { label: "Home", href: "/", protected: false },
+    { label: "Rooms", href: "/rooms", protected: false },
+    { label: "Add Room", href: "/AddRoom", protected: false },
+    { label: "My Listing", href: "/MyListing", protected: true },
+    { label: "My Bookings", href: "/MyBookings", protected: true },
   ];
 
-  const links = navLinks.map((link, index) => (
+  const visibleLinks = navLinks.filter(
+    (link) => !link.protected || isLoggedIn
+  );
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/");
+  };
+
+  const links = visibleLinks.map((link, index) => (
     <motion.li
       key={link.href}
       initial={{ opacity: 0, y: -10 }}
@@ -36,7 +51,6 @@ const Navbar = () => {
         }`}
       >
         {link.label}
-
         {pathname !== link.href && (
           <motion.span
             className="absolute bottom-0 left-0 h-0.5 bg-[#C9A96E] rounded"
@@ -71,9 +85,9 @@ const Navbar = () => {
         >
           <Link
             href="/"
-            className="flex items-center gap-1   font-bold text-xl text-[#C9A96E] font-serif tracking-wide"
+            className="flex items-center gap-1 font-bold text-xl text-[#C9A96E] font-serif tracking-wide"
           >
-           <Books></Books>
+            <Books />
             StudyNook
           </Link>
         </motion.div>
@@ -90,23 +104,51 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-            <Link
-              href="/signin"
-              className="text-sm font-semibold text-[#C9A96E] border border-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#C9A96E]/10 transition-colors inline-block"
-            >
-              Login
-            </Link>
-          </motion.div>
+          {isLoggedIn ? (
+            <>
+              {/* Avatar */}
+              {session.user.image && (
+                <motion.img
+                  src={session.user.image}
+                  alt={session.user.name || "User"}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-[#C9A96E]"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              )}
 
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-            <Link
-              href="/signup"
-              className="text-sm font-semibold text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors inline-block"
-            >
-              Register
-            </Link>
-          </motion.div>
+              {/* Sign Out */}
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Button
+                  onClick={handleSignOut}
+                  className="text-sm font-semibold text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors"
+                >
+                  Sign Out
+                </Button>
+              </motion.div>
+            </>
+          ) : (
+            <>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Link
+                  href="/authentication/signin"
+                  className="text-sm font-semibold text-[#C9A96E] border border-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#C9A96E]/10 transition-colors inline-block"
+                >
+                  Login
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Link
+                  href="/authentication/signup"
+                  className="text-sm font-semibold text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors inline-block"
+                >
+                  Register
+                </Link>
+              </motion.div>
+            </>
+          )}
         </motion.div>
 
         {/* Mobile — Hamburger */}
@@ -154,7 +196,7 @@ const Navbar = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <ul className="flex flex-col gap-2 m-0 p-0">
-              {navLinks.map((link, index) => (
+              {visibleLinks.map((link, index) => (
                 <motion.li
                   key={link.href}
                   initial={{ opacity: 0, x: -15 }}
@@ -183,19 +225,45 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-            <Link
-  href="/authentication/signin"
-  onClick={() => setMenuOpen(false)}
->
-  Login
-</Link>
-
-<Link
-  href="/authentication/signup"
-  onClick={() => setMenuOpen(false)}
->
-  Register
-</Link>
+              {isLoggedIn ? (
+                <>
+                  {session.user.image && (
+                    <div className="flex items-center gap-2 px-3 py-1.5">
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || "User"}
+                        className="w-7 h-7 rounded-full object-cover border-2 border-[#C9A96E]"
+                      />
+                      <span className="text-sm text-[#F5EDD8] font-medium">
+                        {session.user.name}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => { setMenuOpen(false); handleSignOut(); }}
+                    className="text-sm font-semibold text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors text-left"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/authentication/signin"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-sm font-semibold text-[#C9A96E] border border-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#C9A96E]/10 transition-colors text-center"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/authentication/signup"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-sm font-semibold text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors text-center"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}

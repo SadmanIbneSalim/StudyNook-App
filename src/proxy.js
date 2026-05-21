@@ -15,7 +15,7 @@ export async function proxy(request) {
   
   if (!session) {
     
-    const loginUrl = new URL('/signin', request.url)
+    const loginUrl = new URL('/authentication/signin', request.url)
   
     loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
     
@@ -27,6 +27,6 @@ export async function proxy(request) {
 
 
 export const config = {
-  // এখানে "/Profile" এবং "/Products" এর পরের সব পেজকে প্রটেক্ট করা হয়েছে।
-  matcher: ["/MyListing",'/MyBookings', "/rooms/:path"], 
+
+  matcher: ["/MyListing",'/AddRoom','/MyBookings', "/rooms/:path"], 
 }

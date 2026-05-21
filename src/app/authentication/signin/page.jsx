@@ -58,7 +58,7 @@ const LogInPage = () => {
         <div className="bg-[#2C1F0E] px-12 py-9">
           <span className="block w-8 h-[3px] bg-[#C9A96E] rounded-full mb-3" />
           <h1 className="text-[28px] font-bold text-[#F5EDD8] font-serif leading-tight">
-            Welcome back
+            Log In Now
           </h1>
           <p className="text-[#C9A96E] text-sm mt-1">
             Login to your StudyNook account
@@ -116,7 +116,7 @@ const LogInPage = () => {
                 {/* Lock icon */}
                 <IoIosLock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C7E57] w-4 h-4" />
                 <Input
-                  placeholder="••••••••"
+                  placeholder="Your Password"
                   className="w-full pl-10 pr-10 py-3 rounded-xl border border-[#DDD5C4] bg-[#FDFAF5] text-[#2C1F0E] placeholder:text-[#BDB5A8] text-sm outline-none focus:border-[#C9A96E] transition-colors"
                 />
                 {/* Eye toggle */}

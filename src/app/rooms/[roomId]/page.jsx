@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { Button, Chip } from '@heroui/react';
 import { ModalForm } from '@/components/modal';
 import { DeleteData } from '@/components/delete';
+import BookingModal from '@/components/BookNowModal';
+import BookNowModal from '@/components/BookNowModal';
 
 export default async function DetailsPage({ params }) {
   const { roomId } = await params;
@@ -77,18 +79,14 @@ export default async function DetailsPage({ params }) {
             )}
 
             {/* Book Now */}
-            <Button
-              className="w-full font-bold text-white bg-[#5a4a38]"
-              size="lg"
-              radius="md"
-            >
-              Book Now
-            </Button>
+            
+            <BookNowModal data={data}></BookNowModal>
 
             {/* Edit / Delete */}
             <div className="flex gap-3">
               <ModalForm data={data} />
               <DeleteData data={data} />
+              
             </div>
 
           </div>
