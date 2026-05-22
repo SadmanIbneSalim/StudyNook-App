@@ -15,7 +15,7 @@ const MyBookings = async () => {
   const bookings = await res.json();
 
   return (
-    <div className="bg-[#F5EDD8] min-h-screen py-10 px-4">
+    <div className="bg-[#F5EDD8] min-vh-70 py-10 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* Page Header */}

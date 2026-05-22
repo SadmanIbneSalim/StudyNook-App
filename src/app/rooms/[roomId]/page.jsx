@@ -79,7 +79,7 @@ export default async function DetailsPage({ params }) {
 
             {/* Amenities */}
             {data.amenities?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap mx-4 gap-2">
                 {data.amenities.map((item, index) => (
                   <Chip
                     key={index}

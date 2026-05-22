@@ -89,10 +89,10 @@ export default function RoomCard({ data }) {
           {shortDescription}
         </p>
 
-        {/* Info Row */}
+       
         <div className="flex items-center gap-4 text-sm text-gray-600 border-t border-gray-100 pt-3">
           <div className="flex items-center gap-1.5">
-            {/* Person icon (SVG inline) */}
+            
             <Person></Person>
             <span className="font-medium">{capacity}</span>
           </div>

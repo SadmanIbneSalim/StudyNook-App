@@ -4,10 +4,13 @@ import { motion } from "motion/react";
 
 const Banner = () => {
   return (
-    <div className="bg-[url('/assets/Banner.png')] bg-cover text-white flex justify-between flex-col items-center gap-5 h-180">
+     <div className="bg-[url('/assets/Banner.png')] bg-cover text-white flex justify-between flex-col items-center gap-5 h-180 relative">
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70 pointer-events-none z-0" />
 
       {/* Hero content */}
-      <div className="p-10 text-center flex justify-center flex-col items-center gap-3.5 flex-1">
+      <div className="p-10 text-center flex justify-center flex-col items-center gap-3.5 flex-1 relative z-10">
 
         <motion.h1
           className="text-5xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
@@ -46,7 +49,7 @@ const Banner = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
           >
-            View Destination
+            View Rooms
           </motion.button>
         </motion.div>
       </div>
@@ -76,7 +79,7 @@ const Banner = () => {
           transition={{ delay: 0.75 }}
         >
           <h3 className="text-sm">Date/Duration</h3>
-          <p className="text-xs">Anytime/6 Days</p>
+          <p className="text-xs">Anytime 7 Days</p>
         </motion.div>
 
         <Separator variant="tertiary" orientation="vertical" />
@@ -88,7 +91,7 @@ const Banner = () => {
           transition={{ delay: 0.8 }}
         >
           <h3 className="text-sm">Budget</h3>
-          <p className="text-xs">$5-$15</p>
+          <p className="text-xs">affordable</p>
         </motion.div>
 
         <Separator variant="tertiary" orientation="vertical" />

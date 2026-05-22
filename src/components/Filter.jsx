@@ -60,8 +60,8 @@ const RoomFilter = ({ roomData }) => {
     const isFiltered = search || sort || activeAmenities.length > 0;
 
     return (
-        <div>
-            {/* Search + Sort Row */}
+        <div className="mx-4 pb-8">
+            
             <div className="flex flex-col sm:flex-row gap-3 mb-5">
 
                 {/* Search */}

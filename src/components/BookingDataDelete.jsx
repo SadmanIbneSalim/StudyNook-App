@@ -3,6 +3,7 @@
 import { AlertDialog, Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export function BookingDataDelete({ bookingId }) {
   const router = useRouter();
@@ -16,11 +17,10 @@ export function BookingDataDelete({ bookingId }) {
       });
 
       if (res.ok) {
-        // মোডাল বন্ধ করার জন্য HeroUI এর ক্লোজ ফাংশন কল করা ভালো
-        if (typeof closeModal === 'function') closeModal(); 
-        
-        // ডিলিট হওয়ার পর পেজের ডাটা রিফ্রেশ করবে
-        router.refresh(); 
+        if (typeof closeModal === "function") closeModal();
+        toast.success("Booking deleted successfully!"); 
+
+        router.refresh();
       } else {
         console.error("Delete failed");
       }
@@ -33,13 +33,12 @@ export function BookingDataDelete({ bookingId }) {
 
   return (
     <AlertDialog>
-      {/* ১. প্রধান ফিক্স: বাটনটিকে Trigger হিসেবে রেজিস্টার করতে হবে */}
       <AlertDialog.Trigger>
         <Button variant="danger">Delete</Button>
       </AlertDialog.Trigger>
-      
-      <AlertDialog.Backdrop 
-        className="bg-linear-to-t from-black/80 via-black/40 to-transparent dark:from-zinc-800/80 dark:via-zinc-800/40"
+
+      <AlertDialog.Backdrop
+        className="bg-linear-to-t from-red-950/90 via-red-950/50 to-transparent dark:from-red-950/95 dark:via-red-950/60"
         variant="blur"
       >
         <AlertDialog.Container>
@@ -47,23 +46,24 @@ export function BookingDataDelete({ bookingId }) {
             <AlertDialog.CloseTrigger />
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />
-              <AlertDialog.Heading>Delete your room permanently?</AlertDialog.Heading>
+              <AlertDialog.Heading>
+                Delete your room permanently?
+              </AlertDialog.Heading>
             </AlertDialog.Header>
             <AlertDialog.Body>
               <p>
-                This will permanently delete this booking and all of its
-                data. This action cannot be undone.
+                This will permanently delete this booking and all of its data.
+                This action cannot be undone.
               </p>
             </AlertDialog.Body>
             <AlertDialog.Footer>
               <Button slot="close" variant="tertiary" disabled={isDeleting}>
                 Cancel
               </Button>
-              
-              {/* ২. দ্বিতীয় ফিক্স: HeroUI এর রুলস অনুযায়ী অ্যাকশন বাটন হ্যান্ডেল করা */}
-              <Button 
-                onClick={() => handleDelete()} 
-                slot="close" 
+
+              <Button
+                onClick={() => handleDelete()}
+                slot="close"
                 variant="danger"
                 disabled={isDeleting}
               >

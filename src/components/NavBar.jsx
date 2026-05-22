@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Books } from "@gravity-ui/icons";
 import { Button } from "@heroui/react";
 import Image from "next/image";
+import { HiMiniBars3CenterLeft } from "react-icons/hi2";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -15,6 +16,8 @@ const Navbar = () => {
 
   const { data: session } = authClient.useSession();
   const isLoggedIn = !!session?.user;
+
+  const firstWord = session?.user?.name?.split(" ")[0]?.[0]?.toUpperCase() ?? "U";
 
   const navLinks = [
     { label: "Home", href: "/", protected: false },
@@ -32,6 +35,27 @@ const Navbar = () => {
     await authClient.signOut();
     router.push("/");
   };
+
+  const Avatar = ({ className = "w-8 h-8 text-sm" }) =>
+    session?.user?.image ? (
+      <motion.img
+        src={session.user.image}
+        alt={session.user.name || "User"}
+        className={`rounded-full object-cover border-2 border-[#C9A96E] ${className}`}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      />
+    ) : (
+      <motion.div
+        className={`rounded-full border-2 border-[#C9A96E] bg-[#C9A96E]/20 flex items-center justify-center font-bold text-[#C9A96E] ${className}`}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {firstWord}
+      </motion.div>
+    );
 
   const links = visibleLinks.map((link, index) => (
     <motion.li
@@ -106,19 +130,8 @@ const Navbar = () => {
         >
           {isLoggedIn ? (
             <>
-              {/* Avatar */}
-              {session.user.image && (
-                <motion.img
-                  src={session.user.image}
-                  alt={session.user.name || "User"}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-[#C9A96E]"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              )}
+              <Avatar className="w-8 h-8 text-sm" />
 
-              {/* Sign Out */}
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                 <Button
                   onClick={handleSignOut}
@@ -158,25 +171,7 @@ const Navbar = () => {
           whileTap={{ scale: 0.9 }}
           aria-label="Toggle menu"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <motion.path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              animate={
-                menuOpen
-                  ? { d: "M6 18L18 6M6 6l12 12" }
-                  : { d: "M4 6h16M4 12h8m-8 6h16" }
-              }
-              transition={{ duration: 0.3 }}
-            />
-          </svg>
+          <HiMiniBars3CenterLeft />
         </motion.button>
       </div>
 
@@ -227,18 +222,12 @@ const Navbar = () => {
             >
               {isLoggedIn ? (
                 <>
-                  {session.user.image && (
-                    <div className="flex items-center gap-2 px-3 py-1.5">
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.name || "User"}
-                        className="w-7 h-7 rounded-full object-cover border-2 border-[#C9A96E]"
-                      />
-                      <span className="text-sm text-[#F5EDD8] font-medium">
-                        {session.user.name}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 px-3 py-1.5">
+                    <Avatar className="w-7 h-7 text-xs" />
+                    <span className="text-sm text-[#F5EDD8] font-medium">
+                      {session.user.name}
+                    </span>
+                  </div>
                   <button
                     onClick={() => { setMenuOpen(false); handleSignOut(); }}
                     className="text-sm font-semibold text-[#3B2F1E] bg-[#C9A96E] px-4 py-2 rounded-full hover:bg-[#b8944f] transition-colors text-left"

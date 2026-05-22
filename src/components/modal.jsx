@@ -19,6 +19,7 @@ import {
 } from "@heroui/react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const amenityOptions = [
   { label: "Whiteboard", value: "Whiteboard" },
@@ -45,9 +46,10 @@ export function ModalForm({ data }) {
     });
     const result = await res.json();
     console.log("Updated:", result);
-    // TODO: toast success + close modal
+    toast.success("Room updated successfully!")
 } catch (err) {
     console.error("Update failed:", err);
+     toast.error("Failed to update room.")
 }
 redirect(`/rooms/${data._id}`)
 };
@@ -145,7 +147,7 @@ redirect(`/rooms/${data._id}`)
                         <FieldError className="text-xs text-[#8B3A2A] mt-1" />
                       </TextField>
 
-                      {/* Floor · Capacity · Hourly Rate — 3-col grid */}
+                      
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {/* Floor */}
                         <TextField

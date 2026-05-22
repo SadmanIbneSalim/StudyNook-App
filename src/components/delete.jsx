@@ -2,8 +2,12 @@
 
 import {AlertDialog, Button} from "@heroui/react";
 import { redirect } from "next/navigation";
+// import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export  function DeleteData ({data}) {
+
+  // const router = useRouter()
 
      const handleDelete =async()=>{
 
@@ -12,9 +16,12 @@ const res= await fetch(`http://localhost:2001/rooms/${data._id}`,{
 });
 const roomData=await res.json();
 
-redirect('/rooms')
-console.log(roomData);
-
+if (res.ok) {
+      toast.success(`"${data.name}" deleted successfully!`); 
+      redirect("/MyListing"); 
+    } else {
+      toast.error("Failed to delete room."); 
+    }
 
 }
 
@@ -25,8 +32,10 @@ console.log(roomData);
     <AlertDialog>
        
       <Button variant="danger">Delete</Button>
-      <AlertDialog.Backdrop  className="bg-linear-to-t from-black/80 via-black/40 to-transparent dark:from-zinc-800/80 dark:via-zinc-800/40"
-        variant="blur">
+      <AlertDialog.Backdrop
+        className="bg-linear-to-t from-red-950/90 via-red-950/50 to-transparent dark:from-red-950/95 dark:via-red-950/60"
+        variant="blur"
+      >
         <AlertDialog.Container>
           <AlertDialog.Dialog className="sm:max-w-150">
             <AlertDialog.CloseTrigger />

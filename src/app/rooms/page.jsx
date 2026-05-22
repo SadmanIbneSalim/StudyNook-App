@@ -13,8 +13,14 @@ const RoomPage = async() => {
     return (
         <div className='bg-[#F5EDD8]'>
             <div className='max-w-7xl mx-auto '>
-            <h1>All Study Rooms</h1>
-            <p>Browse all available rooms across the library</p>
+                <h1 className="text-3xl font-bold text-[#2C1F0E] font-serif pt-5">
+          All Study Rooms
+        </h1>
+        <h1 className="text-xl font-bold text-[#2C1F0E] font-serif mb-6">
+         Browse all available rooms across the library
+        </h1>
+            
+           
 
             <RoomFilter roomData={roomData}/>
 

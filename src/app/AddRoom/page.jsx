@@ -18,6 +18,7 @@ import {
 } from "@heroui/react";
 import { redirect } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 
 
@@ -55,7 +56,14 @@ const AddRoom = () => {
       body: JSON.stringify(newRoom),
     });
     const roomData = await res.json();
-    redirect('/rooms');
+
+     if (res.ok) {
+      toast.success("Room added successfully!"); 
+      redirect('/rooms'); 
+    } else {
+      toast.error("Failed to add room.");
+    }
+    
   };
 
   return (

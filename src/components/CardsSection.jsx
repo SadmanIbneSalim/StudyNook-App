@@ -7,7 +7,6 @@ const CardsSection = async () => {
     const res = await fetch("http://localhost:2001/rooms", { cache: "no-store" });
     const roomData = await res.json();
 
-    // ✅ latest 3টা পেতে reverse করো
     const latestRooms = [...roomData].reverse().slice(0, 6);
 
     return (
@@ -15,10 +14,10 @@ const CardsSection = async () => {
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-xl font-semibold text-center text-[#3B2F1E] py-8">Our Latest Rooms</h1>
                 <div className="flex justify-end">
-                    <h1>see more <MdOutlineArrowRightAlt /></h1>
+                    <div className="flex"><h1>see more <MdOutlineArrowRightAlt /></h1></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-5 gap-3">
+                <div className="grid grid-cols-1 mx-4 md:grid-cols-2 lg:grid-cols-3 pt-5 gap-3">
                     {latestRooms.map(data => (
                         <RoomCard key={data._id} data={data} />
                     ))}

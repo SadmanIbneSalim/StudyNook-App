@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaGoogle } from "react-icons/fa";
 import { IoIosLock, IoIosUnlock, IoMdEyeOff, IoMdMail } from "react-icons/io";
+// import { toast } from "react-toastify";
 
 const LogInPage = () => {
   const searchParams = useSearchParams();

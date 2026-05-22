@@ -33,36 +33,56 @@ const BookNowModal = ({ data }) => {
   const totalCost = totalHours ? totalHours * data?.rate : null;
 
   const handleBooking = async () => {
-    const bookingData = {
-      userId: user?.id || null,
-      userImage: user?.image || null,
-      userName: user?.name || null,
-      roomId: data?._id,
-      roomName: data?.name,
-      rate: data?.rate,
-      imageUrl: data?.image,
-      bookingDate: bookingDate ? new Date(bookingDate) : null,
-      startTime: startTime
-        ? `${String(startTime.hour).padStart(2, "0")}:00`
-        : null,
-      endTime: endTime
-        ? `${String(endTime.hour).padStart(2, "0")}:00`
-        : null,
-      totalHours: totalHours || null,
-      totalCost: totalCost || null,
-    };
+  if (!bookingDate || !startTime || !endTime) {
+    toast.error("Please fill all fields.");
+    return;
+  }
 
-    console.log("Booking Data:", bookingData);
-
-    const res = await fetch(`http://localhost:2001/booking`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(bookingData),
-    });
-    const result = await res.json();
-    console.log("Response:", result);
-   toast.success("Room booked successfully!");
+  const bookingData = {
+    userId: user?.id || null,
+    userImage: user?.image || null,
+    userName: user?.name || null,
+    roomId: data?._id,
+    roomName: data?.name,
+    rate: data?.rate,
+    imageUrl: data?.image,
+    bookingDate: bookingDate ? new Date(bookingDate) : null,
+    startTime: startTime
+      ? `${String(startTime.hour).padStart(2, "0")}:00`
+      : null,
+    endTime: endTime
+      ? `${String(endTime.hour).padStart(2, "0")}:00`
+      : null,
+    totalHours: totalHours || null,
+    totalCost: totalCost || null,
+    status: "pending", 
   };
+
+  const res = await fetch(`http://localhost:2001/booking`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(bookingData),
+  });
+
+
+  if (res.status === 409) {
+    const error = await res.json();
+    toast.error(error.message, {
+      position: "top-center",
+      autoClose: 5000,
+    });
+    return; 
+  }
+
+  
+  if (res.ok) {
+    toast.success("Room booked successfully!", {
+      position: "top-center",
+    });
+ 
+    document.querySelector("[data-slot='close-trigger']")?.click();
+  }
+};
 
   return (
     <div>
@@ -226,7 +246,7 @@ const BookNowModal = ({ data }) => {
                   </div>
                 </div>
 
-                {/* Warning if end time <= start time */}
+                
                 {startTime && endTime && endTime.hour <= startTime.hour && (
                   <p className="text-xs text-red-500 bg-red-50 px-4 py-2 rounded-lg border border-red-100">
                     End time must be after start time.
@@ -244,7 +264,7 @@ const BookNowModal = ({ data }) => {
                 </Button>
                 <Button
                   onClick={handleBooking}
-                  slot="close"
+                //   slot="close"
                   isDisabled={
                     !bookingDate ||
                     !startTime ||

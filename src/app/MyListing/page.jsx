@@ -19,13 +19,13 @@ const MyListing = async () => {
   const myRooms = await res.json();
 
   return (
-    <div className="bg-[#F5EDD8] min-h-screen py-10 px-4">
+    <div className="bg-[#F5EDD8] min-vh-70 py-10 px-4">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-[#2C1F0E] font-serif mb-6">
           My Listings
         </h1>
         {myRooms?.length === 0 ? (
-          <p className="text-[#9C7E57]">তুমি এখনো কোনো room add করোনি।</p>
+          <p className="text-[#9C7E57] text-2xl">You haven't added any rooms yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {myRooms.map((room) => (
