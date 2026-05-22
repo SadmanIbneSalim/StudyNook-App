@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { Plus } from "@gravity-ui/icons";
 import {
   Button,
@@ -18,6 +19,8 @@ import {
 import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
+
+
 const amenityOptions = [
   { label: "Whiteboard", value: "Whiteboard" },
   { label: "Projector", value: "Projector" },
@@ -29,11 +32,18 @@ const amenityOptions = [
 
 const AddRoom = () => {
   const [amenities, setAmenities] = useState([]);
+  const { data: session } = authClient.useSession();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
-    const newRoom = { ...data, amenities };
+    const newRoom = {
+       ...data,
+        amenities,
+        ownerId:session?.user?.id,
+        ownerName:session?.user?.name,
+
+       };
     console.log("Room payload:", newRoom);
     
 

@@ -19,7 +19,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/", protected: false },
     { label: "Rooms", href: "/rooms", protected: false },
-    { label: "Add Room", href: "/AddRoom", protected: false },
+    { label: "Add Room", href: "/AddRoom", protected: true },
     { label: "My Listing", href: "/MyListing", protected: true },
     { label: "My Bookings", href: "/MyBookings", protected: true },
   ];
