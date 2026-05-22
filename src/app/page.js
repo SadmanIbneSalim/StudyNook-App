@@ -1,14 +1,16 @@
 
 import Banner from "@/components/Banner";
-import WorkIngSteps from "@/components/WorkIngSteps";
-import { Button } from "@heroui/react";
-import Image from "next/image";
+import HowItWorks from "@/components/howItWorks";
+import TrustedByStudents from "@/components/TrustedByTheStudennt";
+
 
 export default function Home() {
   return (
     <div>
       <Banner></Banner>
-      <WorkIngSteps></WorkIngSteps>
+     
+      <HowItWorks></HowItWorks>
+      <TrustedByStudents></TrustedByStudents>
       
     </div>
   );

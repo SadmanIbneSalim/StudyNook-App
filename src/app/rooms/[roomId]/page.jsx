@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Button, Chip } from '@heroui/react';
 import { ModalForm } from '@/components/modal';
 import { DeleteData } from '@/components/delete';
-import BookingModal from '@/components/BookNowModal';
+
 import BookNowModal from '@/components/BookNowModal';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';

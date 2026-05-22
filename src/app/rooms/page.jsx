@@ -1,6 +1,7 @@
 
 import RoomCard from '@/components/Card';
 import Card from '@/components/Card';
+import RoomFilter from '@/components/Filter';
 import React from 'react';
 
 const RoomPage = async() => {
@@ -15,11 +16,13 @@ const RoomPage = async() => {
             <h1>All Study Rooms</h1>
             <p>Browse all available rooms across the library</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-5 gap-3">
+            <RoomFilter roomData={roomData}/>
+
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-5 gap-3">
                { 
                roomData.map(data=> <RoomCard key={data._id} data={data}></RoomCard>)
                }
-            </div>
+            </div> */}
 
             </div>
 
