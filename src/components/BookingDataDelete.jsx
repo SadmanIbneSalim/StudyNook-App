@@ -12,7 +12,7 @@ export function BookingDataDelete({ bookingId }) {
   const handleDelete = async (closeModal) => {
     setIsDeleting(true);
     try {
-      const res = await fetch(`http://localhost:2001/booking/${bookingId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
         method: "DELETE",
       });
 

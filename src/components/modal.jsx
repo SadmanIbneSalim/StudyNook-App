@@ -39,7 +39,7 @@ export function ModalForm({ data }) {
   const newRoom = { ...formData, amenities };
 
   try {
-    const res = await fetch(`http://localhost:2001/rooms/${data._id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${data._id}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(newRoom),

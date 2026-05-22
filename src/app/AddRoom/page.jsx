@@ -46,12 +46,15 @@ const AddRoom = () => {
 
        };
     console.log("Room payload:", newRoom);
+
+    const {data:tokenData}=await authClient.token();
     
 
-    const res = await fetch(`http://localhost:2001/rooms`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        authorization:`Bearer ${tokenData?.token}`
       },
       body: JSON.stringify(newRoom),
     });

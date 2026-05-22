@@ -1,4 +1,4 @@
-import DataTable from "@/components/DataTable"; // নতুন table বানাবো
+
 import { DeleteData } from "@/components/delete";
 import { ModalForm } from "@/components/modal";
 import { auth } from "@/lib/auth";
@@ -11,15 +11,22 @@ const MyListing = async () => {
   });
   const user = session?.user;
 
-  // শুধু এই user এর rooms fetch করো
+   const {token} = await auth.api.getToken({
+    headers: await headers(),
+  });
   const res = await fetch(
-    `http://localhost:2001/rooms/owner/${user?.id}`,
-    { cache: "no-store" }
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/owner/${user?.id}`,
+    { cache: "no-store",
+        headers:{Authorization: `Bearer ${token}`}
+        
+     },
+     
+    
   );
   const myRooms = await res.json();
 
   return (
-    <div className="bg-[#F5EDD8] min-vh-70 py-10 px-4">
+    <div className="bg-[#F5EDD8] min-h-screen py-10 px-4">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-[#2C1F0E] font-serif mb-6">
           My Listings

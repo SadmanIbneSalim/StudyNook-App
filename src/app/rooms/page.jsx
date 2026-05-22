@@ -6,7 +6,7 @@ import React from 'react';
 
 const RoomPage = async() => {
 
-    const res=await fetch("http://localhost:2001/rooms");
+    const res=await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`);
     const roomData=await res.json()
     console.log(roomData);
 

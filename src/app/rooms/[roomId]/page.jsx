@@ -13,9 +13,14 @@ export default async function DetailsPage({ params }) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const token = session?.session?.token;
 
-  const res = await fetch(`http://localhost:2001/rooms/${roomId}`, {
+  
+  const {token} = await auth.api.getToken({
+    headers: await headers(),
+  });
+  console.log(token)
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${roomId}`, {
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",

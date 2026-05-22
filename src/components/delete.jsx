@@ -11,7 +11,7 @@ export  function DeleteData ({data}) {
 
      const handleDelete =async()=>{
 
-const res= await fetch(`http://localhost:2001/rooms/${data._id}`,{
+const res= await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${data._id}`,{
     method: "DELETE"
 });
 const roomData=await res.json();

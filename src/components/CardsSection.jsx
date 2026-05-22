@@ -3,8 +3,8 @@ import RoomCard from "./Card";
 import { MdOutlineArrowRightAlt } from "react-icons/md";
 
 const CardsSection = async () => {
-
-    const res = await fetch("http://localhost:2001/rooms", { cache: "no-store" });
+ 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`, { cache: "no-store" ,});
     const roomData = await res.json();
 
     const latestRooms = [...roomData].reverse().slice(0, 6);
