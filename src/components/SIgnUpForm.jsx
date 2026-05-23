@@ -10,16 +10,18 @@ import {
   TextField,
 } from "@heroui/react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaGoogle } from "react-icons/fa";
 import { IoIosLock, IoMdEyeOff, IoMdMail } from "react-icons/io";
 import { MdOutlineImage, MdPersonOutline } from "react-icons/md";
+import { toast } from "react-toastify";
 
 
 
 
 const SignUpPage = () => {
+  const router=useRouter()
   const searchParams = useSearchParams();
   const callbackURL = searchParams.get("callbackUrl") || "/";
   const [showPassword, setShowPassword] = useState(false);
@@ -39,10 +41,11 @@ const SignUpPage = () => {
       },
       {
         onSuccess: () => {
-          // toast.success("Account created!");
+          router.push("/authentication/signin");
+          toast.success('SignUp Successful');
         },
         onError: () => {
-          // toast.error("Something went wrong!");
+          toast.error("Something went wrong!");
         },
       }
     );

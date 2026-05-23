@@ -50,7 +50,7 @@ const Banner = () => {
             whileTap={{ scale: 0.96 }}
           >
             View Rooms
-          </motion.button>
+          </motion.button> 
         </motion.div>
       </div>
 

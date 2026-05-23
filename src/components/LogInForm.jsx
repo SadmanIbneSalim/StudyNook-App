@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaGoogle } from "react-icons/fa";
 import { IoIosLock, IoIosUnlock, IoMdEyeOff, IoMdMail } from "react-icons/io";
+import { toast } from "react-toastify";
 // import { toast } from "react-toastify";
 
 
@@ -42,10 +43,10 @@ const LogInPage = () => {
       },
       {
         onSuccess: () => {
-          // toast.success("Login successful!!");
+          toast.success("Login successful!!");
         },
         onError: () => {
-          // toast.error("Something went wrong!");
+          toast.error("Something went wrong!");
         },
       },
     );
@@ -60,10 +61,10 @@ const LogInPage = () => {
 
   return (
     <div className=" bg-[#F5EDD8] flex items-center justify-center p-6">
-      <div className="w-[560px] max-w-full my-10 bg-white rounded-3xl border border-[#e8dece] shadow-xl overflow-hidden">
+      <div className="w-140 max-w-full my-10 bg-white rounded-3xl border border-[#e8dece] shadow-xl overflow-hidden">
         
         <div className="bg-[#2C1F0E] px-12 py-9">
-          <span className="block w-8 h-[3px] bg-[#C9A96E] rounded-full mb-3" />
+          <span className="block w-8 h-1 bg-[#C9A96E] rounded-full mb-3" />
           <h1 className="text-[28px] font-bold text-[#F5EDD8] font-serif leading-tight">
             Log In Now
           </h1>
