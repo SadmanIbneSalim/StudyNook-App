@@ -15,8 +15,8 @@ const roboto = Roboto({
 
 
 export const metadata = {
-  title: "StudyNook",
-  description: " Your Perfect Study Corner,Just a Click Away. ",
+  title: "StudyNook | Find Quiet Study Rooms Near You",
+  description: " Book peaceful and private study rooms for focused learning. Explore modern library spaces with Wi-Fi, whiteboards, air conditioning, and flexible hourly booking. ",
 };
 
 export default function RootLayout({ children }) {

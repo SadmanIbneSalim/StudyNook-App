@@ -4,10 +4,15 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { CircleExclamation, House, Magnifier } from "@gravity-ui/icons";
 
+// export const metadata = {
+//   title: "StudyNook | Page Not Found",
+//   description:
+//     "The page you are looking for does not exist. Return to StudyNook and continue exploring available study rooms. ",
+// };
+
 const NotFound = () => {
   return (
     <div className="min-h-screen bg-[#F5EDD8] flex flex-col items-center justify-center px-6 text-center ">
-
       {/* Animated 404 number */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -15,10 +20,7 @@ const NotFound = () => {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="select-none"
       >
-        <span
-          className="font-bold text-[200px] font-serif leading-none text-red-600  "
-         
-        >
+        <span className="font-bold text-[200px] font-serif leading-none text-red-600  ">
           404
         </span>
       </motion.div>
@@ -31,7 +33,7 @@ const NotFound = () => {
         className="mb-5 -mt-6"
       >
         <div className="w-16 h-16 rounded-full bg-[#EDE8DF] flex items-center justify-center mx-auto">
-         <CircleExclamation></CircleExclamation>
+          <CircleExclamation></CircleExclamation>
         </div>
       </motion.div>
 

@@ -7,6 +7,12 @@ import BookNowModal from "@/components/BookNowModal";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+export const metadata = {
+  title: "StudyNook | Study Room Details & Booking",
+  description:
+    " View detailed information about study rooms including seating capacity, amenities, pricing, and availability. Book your preferred time slot instantly. ",
+};
+
 export default async function DetailsPage({ params }) {
   const { roomId } = await params;
 
@@ -14,19 +20,21 @@ export default async function DetailsPage({ params }) {
     headers: await headers(),
   });
 
-  
-  const {token} = await auth.api.getToken({
+  const { token } = await auth.api.getToken({
     headers: await headers(),
   });
-  console.log(token)
+  console.log(token);
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${roomId}`, {
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${roomId}`,
+    {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
   const data = await res.json();
   const isOwner = session?.user?.id === data.ownerId;
 

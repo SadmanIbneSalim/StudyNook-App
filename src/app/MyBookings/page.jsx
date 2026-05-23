@@ -3,27 +3,35 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import React from "react";
 
+export const metadata = {
+  title: "StudyNook | My Room Bookings",
+  description:
+    " Track your upcoming and past study room reservations, manage schedules, and cancel bookings when needed.",
+};
+
 const MyBookings = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   const user = session?.user;
 
-   const {token} = await auth.api.getToken({
+  const { token } = await auth.api.getToken({
     headers: await headers(),
   });
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${user?.id}`, {
-    cache: "no-store",
-    headers:{Authorization: `Bearer ${token}`}
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${user?.id}`,
+    {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
   const data = await res.json();
-const bookings = Array.isArray(data) ? data : [];
+  const bookings = Array.isArray(data) ? data : [];
 
   return (
     <div className="bg-[#F5EDD8] min-vh-70 py-10 px-4">
       <div className="max-w-7xl mx-auto">
-
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
@@ -78,7 +86,7 @@ const bookings = Array.isArray(data) ? data : [];
               <p className="text-2xl font-bold text-green-600 font-serif">
                 {
                   bookings.filter(
-                    (b) => b.status?.toLowerCase() === "confirmed"
+                    (b) => b.status?.toLowerCase() === "confirmed",
                   ).length
                 }
               </p>
@@ -101,7 +109,6 @@ const bookings = Array.isArray(data) ? data : [];
           {/* DataTable gets the full bookings array */}
           <DataTable bookings={bookings} />
         </div>
-
       </div>
     </div>
   );

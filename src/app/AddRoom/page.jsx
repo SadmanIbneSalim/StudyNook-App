@@ -21,6 +21,11 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 
+// export const metadata = {
+//   title: "StudyNook | Add a New Study Room",
+//   description: " List your study room on StudyNook and let students reserve peaceful and productive learning spaces online. ",
+// };
+
 
 const amenityOptions = [
   { label: "Whiteboard", value: "Whiteboard" },

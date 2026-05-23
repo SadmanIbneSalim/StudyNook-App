@@ -1,9 +1,14 @@
-
 import { DeleteData } from "@/components/delete";
 import { ModalForm } from "@/components/modal";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Image from "next/image";
+
+export const metadata = {
+  title: "StudyNook | Manage Your Room Listings",
+  description:
+    " View, update, and manage all your listed study rooms from one dashboard with easy editing and booking tracking.",
+};
 
 const MyListing = async () => {
   const session = await auth.api.getSession({
@@ -11,20 +16,15 @@ const MyListing = async () => {
   });
   const user = session?.user;
 
-   const {token} = await auth.api.getToken({
+  const { token } = await auth.api.getToken({
     headers: await headers(),
   });
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/owner/${user?.id}`,
-    { cache: "no-store",
-        headers:{Authorization: `Bearer ${token}`}
-        
-     },
-     
-    
+    { cache: "no-store", headers: { Authorization: `Bearer ${token}` } },
   );
   const data = await res.json();
-const myRooms = Array.isArray(data) ? data : [];
+  const myRooms = Array.isArray(data) ? data : [];
 
   return (
     <div className="bg-[#F5EDD8] min-h-screen py-10 px-4">
@@ -33,15 +33,26 @@ const myRooms = Array.isArray(data) ? data : [];
           My Listings
         </h1>
         {myRooms?.length === 0 ? (
-          <p className="text-[#9C7E57] text-2xl">You haven't added any rooms yet.</p>
+          <p className="text-[#9C7E57] text-2xl">
+            You haven't added any rooms yet.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {myRooms.map((room) => (
-              <div key={room._id} className="bg-white rounded-2xl border border-[#E5D9C3] p-4">
-                <Image src={room.image} alt="" height={50} width={50} className="w-full h-40 object-cover rounded-xl mb-3" />
+              <div
+                key={room._id}
+                className="bg-white rounded-2xl border border-[#E5D9C3] p-4"
+              >
+                <Image
+                  src={room.image}
+                  alt=""
+                  height={50}
+                  width={50}
+                  className="w-full h-40 object-cover rounded-xl mb-3"
+                />
                 <h3 className="font-bold text-[#2C1F0E]">{room.name}</h3>
                 <p className="text-sm text-[#9C7E57]">${room.rate}/hr</p>
-                
+
                 <div className="flex gap-2 mt-3">
                   <ModalForm data={room} />
                   <DeleteData data={room} />
