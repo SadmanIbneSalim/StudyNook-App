@@ -106,7 +106,7 @@ const MyBookings = async () => {
             </span>
           </div>
 
-          {/* DataTable gets the full bookings array */}
+        
           <DataTable bookings={bookings} />
         </div>
       </div>

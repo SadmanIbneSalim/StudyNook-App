@@ -1,100 +1,121 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { Clock, Calendar, Rocket } from "@gravity-ui/icons";
-import {
-  Button,
-  DateField,
-  Description,
-  Label,
-  Modal,
-  TimeField,
-} from "@heroui/react";
+import { Clock, Rocket } from "@gravity-ui/icons";
+import { Button, Calendar, Modal } from "@heroui/react";
+import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+const TIME_SLOTS = [
+  "12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM",
+  "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
+  "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
+  "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM",
+];
+
+const timeToHour = (timeStr) => {
+  if (!timeStr) return null;
+  const [time, period] = timeStr.split(" ");
+  let hour = parseInt(time.split(":")[0]);
+  if (period === "PM" && hour !== 12) hour += 12;
+  if (period === "AM" && hour === 12) hour = 0;
+  return hour;
+};
 
 const BookNowModal = ({ data }) => {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  const [bookingDate, setBookingDate] = useState(null);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const todayDate = today(getLocalTimeZone());
+  const currentHour = new Date().getHours();
 
-  // Calculate total hours between start and end time
-  const calculateHours = () => {
-    if (!startTime || !endTime) return null;
-    const diff = endTime.hour - startTime.hour;
-    return diff > 0 ? diff : null;
+  const [bookingDate, setBookingDate] = useState(todayDate);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  const isToday = bookingDate
+    ? bookingDate.toString() === todayDate.toString()
+    : false;
+
+  // If today is selected, disable past + current hour slots
+  const isSlotDisabled = (slot) => {
+    if (!isToday) return false;
+    const slotHour = timeToHour(slot);
+    return slotHour <= currentHour;
   };
 
-  const totalHours = calculateHours();
+  const getAvailableStartSlots = () =>
+    TIME_SLOTS.filter((slot) => !isSlotDisabled(slot));
+
+  const getEndTimeOptions = () => {
+    if (!startTime) return [];
+    const startIdx = TIME_SLOTS.indexOf(startTime);
+    return TIME_SLOTS.slice(startIdx + 1);
+  };
+
+  const startHour = timeToHour(startTime);
+  const endHour = timeToHour(endTime);
+  const totalHours =
+    startHour !== null && endHour !== null && endHour > startHour
+      ? endHour - startHour
+      : null;
   const totalCost = totalHours ? totalHours * data?.rate : null;
 
-  const handleBooking = async () => {
-  if (!bookingDate || !startTime || !endTime) {
-    toast.error("Please fill all fields.");
-    return;
-  }
-
-  const bookingData = {
-    userId: user?.id || null,
-    userImage: user?.image || null,
-    userName: user?.name || null,
-    roomId: data?._id,
-    roomName: data?.name,
-    rate: data?.rate,
-    imageUrl: data?.image,
-    bookingDate: bookingDate ? new Date(bookingDate) : null,
-    startTime: startTime
-      ? `${String(startTime.hour).padStart(2, "0")}:00`
-      : null,
-    endTime: endTime
-      ? `${String(endTime.hour).padStart(2, "0")}:00`
-      : null,
-    totalHours: totalHours || null,
-    totalCost: totalCost || null,
-    status: "pending", 
+  const handleDateChange = (date) => {
+    setBookingDate(date);
+    setStartTime("");
+    setEndTime("");
   };
 
-  const {data:tokenData}=await authClient.token();
- 
-  
+  const handleBooking = async () => {
+    if (!bookingDate || !startTime || !endTime) {
+      toast.error("Please fill all fields.");
+      return;
+    }
 
+    const bookingData = {
+      userId: user?.id || null,
+      userImage: user?.image || null,
+      userName: user?.name || null,
+      roomId: data?._id,
+      roomName: data?.name,
+      rate: data?.rate,
+      imageUrl: data?.image,
+      bookingDate: new Date(bookingDate.toString()),
+      startTime,
+      endTime,
+      totalHours: totalHours || null,
+      totalCost: totalCost || null,
+      status: "pending",
+    };
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking`, {
-    method: "POST",
-    headers: { "content-type": "application/json",
-        authorization:`Bearer ${tokenData?.token}`
-     },
-    body: JSON.stringify(bookingData),
-  });
+    const { data: tokenData } = await authClient.token();
 
-
-  if (res.status === 409) {
-    const error = await res.json();
-    toast.error(error.message, {
-      position: "top-center",
-      autoClose: 5000,
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${tokenData?.token}`,
+      },
+      body: JSON.stringify(bookingData),
     });
-    return; 
-  }
 
-  
-  if (res.ok) {
-    toast.success("Room booked successfully!", {
-      position: "top-center",
-    });
- 
-    document.querySelector("[data-slot='close-trigger']")?.click();
-  }
-};
+    if (res.status === 409) {
+      const error = await res.json();
+      toast.error(error.message, { position: "top-center", autoClose: 5000 });
+      return;
+    }
+
+    if (res.ok) {
+      toast.success("Room booked successfully!", { position: "top-center" });
+      document.querySelector("[data-slot='close-trigger']")?.click();
+    }
+  };
 
   return (
     <div>
       <Modal>
-        {/* Trigger Button */}
         <Button
           className="w-full font-bold text-[#F5EDD8] bg-[#2C1F0E] hover:bg-[#3D2B13] transition-all duration-200"
           size="lg"
@@ -105,7 +126,7 @@ const BookNowModal = ({ data }) => {
 
         <Modal.Backdrop>
           <Modal.Container>
-            <Modal.Dialog className="sm:max-w-lg">
+            <Modal.Dialog className="sm:max-w-2xl">
               <Modal.CloseTrigger />
 
               {/* Header */}
@@ -134,13 +155,9 @@ const BookNowModal = ({ data }) => {
                     </p>
                     <p className="text-2xl font-bold text-[#2C1F0E] font-serif">
                       ${data?.rate}
-                      <span className="text-sm font-normal text-[#9C7E57] ml-1">
-                        / hour
-                      </span>
+                      <span className="text-sm font-normal text-[#9C7E57] ml-1">/ hour</span>
                     </p>
                   </div>
-
-                  {/* Live Cost Preview */}
                   {totalCost && (
                     <div className="text-right">
                       <p className="text-xs text-[#9C7E57] font-medium uppercase tracking-wide">
@@ -156,109 +173,162 @@ const BookNowModal = ({ data }) => {
                   )}
                 </div>
 
-                {/* Date Field */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Calendar className="size-4 text-[#9C7E57]" />
+                {/* Calendar + Time */}
+                <div className="flex flex-col sm:flex-row gap-6">
+
+                  {/* Calendar */}
+                  <div className="flex flex-col gap-2 flex-1">
                     <span className="text-sm font-semibold text-[#3B2F1E]">
                       Select Date
                     </span>
-                  </div>
-                  <DateField
-                    onChange={setBookingDate}
-                    name="date"
-                    className="w-full"
-                  >
-                    <Label className="sr-only">Date</Label>
-                    <DateField.Group className="w-full px-4 py-3 rounded-xl border border-[#DDD5C4] bg-[#FDFAF5] text-[#2C1F0E] text-sm focus-within:border-[#C9A96E] transition-colors">
-                      <DateField.Input>
-                        {(segment) => (
-                          <DateField.Segment
-                            segment={segment}
-                            className="text-[#2C1F0E] focus:bg-[#F5EDD8] focus:rounded px-0.5 outline-none"
+                    <div className="border border-[#DDD5C4] rounded-xl bg-[#FDFAF5] p-3 w-full">
+                      <Calendar
+                        aria-label="Booking date"
+                        defaultValue={todayDate}
+                        minValue={todayDate}
+                        onChange={handleDateChange}
+                        className="w-full"
+                      >
+                        <Calendar.Header className="flex items-center justify-between mb-2 px-1">
+                          <Calendar.NavButton
+                            slot="previous"
+                            className="text-[#9C7E57] hover:text-[#2C1F0E] transition-colors p-1 rounded"
                           />
-                        )}
-                      </DateField.Input>
-                    </DateField.Group>
-                  </DateField>
-                </div>
-
-                {/* Time Fields Row */}
-                <div className="flex gap-4">
-                  {/* Start Time */}
-                  <div className="flex-1 flex flex-col gap-2">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Clock className="size-4 text-[#9C7E57]" />
-                      <span className="text-sm font-semibold text-[#3B2F1E]">
-                        Start Time
-                      </span>
+                          <Calendar.Heading className="text-sm font-bold text-[#2C1F0E]" />
+                          <Calendar.NavButton
+                            slot="next"
+                            className="text-[#9C7E57] hover:text-[#2C1F0E] transition-colors p-1 rounded"
+                          />
+                        </Calendar.Header>
+                        <Calendar.Grid className="w-full">
+                          <Calendar.GridHeader>
+                            {(day) => (
+                              <Calendar.HeaderCell className="text-xs text-[#9C7E57] font-semibold text-center pb-1">
+                                {day}
+                              </Calendar.HeaderCell>
+                            )}
+                          </Calendar.GridHeader>
+                          <Calendar.GridBody>
+                            {(date) => (
+                              <Calendar.Cell
+                                date={date}
+                                className="text-xs text-center rounded-lg p-1.5 text-[#2C1F0E]
+                                           hover:bg-[#F5EDD8] cursor-pointer transition-colors
+                                           data-[selected]:bg-[#2C1F0E] data-[selected]:text-[#F5EDD8]
+                                           data-[selected]:font-bold data-[disabled]:opacity-30
+                                           data-[disabled]:cursor-not-allowed data-[disabled]:hover:bg-transparent"
+                              />
+                            )}
+                          </Calendar.GridBody>
+                        </Calendar.Grid>
+                      </Calendar>
                     </div>
-                    <TimeField
-                      granularity="hour"
-                      onChange={setStartTime}
-                      name="time"
-                      className="w-full"
-                    >
-                      <Label className="sr-only">Start time</Label>
-                      <TimeField.Group className="w-full px-4 py-3 rounded-xl border border-[#DDD5C4] bg-[#FDFAF5] text-[#2C1F0E] text-sm focus-within:border-[#C9A96E] transition-colors">
-                        <TimeField.Input>
-                          {(segment) => (
-                            <TimeField.Segment
-                              segment={segment}
-                              className="text-[#2C1F0E] focus:bg-[#F5EDD8] focus:rounded px-0.5 outline-none"
-                            />
-                          )}
-                        </TimeField.Input>
-                      </TimeField.Group>
-                      <Description className="text-xs text-[#B0A898] mt-1">
-                        Enter start hour
-                      </Description>
-                    </TimeField>
+                    {bookingDate && (
+                      <p className="text-xs text-[#9C7E57] text-center">
+                        Selected:{" "}
+                        <span className="font-semibold text-[#2C1F0E]">
+                          {bookingDate.toString()}
+                        </span>
+                      </p>
+                    )}
                   </div>
 
-                  {/* Divider */}
-                  <div className="flex items-center pt-8">
-                    <span className="text-[#C9A96E] font-bold text-lg">→</span>
-                  </div>
+                  {/* Time Dropdowns */}
+                  <div className="flex flex-col gap-5 flex-1 justify-center">
 
-                  {/* End Time */}
-                  <div className="flex-1 flex flex-col gap-2">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Clock className="size-4 text-[#9C7E57]" />
-                      <span className="text-sm font-semibold text-[#3B2F1E]">
-                        End Time
-                      </span>
+                    {/* Start Time */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Clock className="size-4 text-[#9C7E57]" />
+                        <span className="text-sm font-semibold text-[#3B2F1E]">
+                          Start Time
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <select
+                          value={startTime}
+                          onChange={(e) => {
+                            setStartTime(e.target.value);
+                            setEndTime("");
+                          }}
+                          className="w-full appearance-none px-4 py-3 rounded-xl border border-[#DDD5C4] bg-[#FDFAF5] text-[#2C1F0E] text-sm focus:outline-none focus:border-[#C9A96E] transition-colors cursor-pointer"
+                        >
+                          <option value="" disabled>Select start time</option>
+                          {TIME_SLOTS.map((slot) => {
+                            const disabled = isSlotDisabled(slot);
+                            return (
+                              <option
+                                key={slot}
+                                value={slot}
+                                disabled={disabled}
+                                className={disabled ? "text-gray-300" : ""}
+                              >
+                                {slot}{disabled ? " (passed)" : ""}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#9C7E57]">
+                          ▾
+                        </div>
+                      </div>
+                      {isToday && (
+                        <p className="text-xs text-[#B0A898]">
+                          Showing available slots from {currentHour + 1}:00 onwards
+                        </p>
+                      )}
                     </div>
-                    <TimeField
-                      granularity="hour"
-                      onChange={setEndTime}
-                      name="end-time"
-                      className="w-full"
-                    >
-                      <Label className="sr-only">End time</Label>
-                      <TimeField.Group className="w-full px-4 py-3 rounded-xl border border-[#DDD5C4] bg-[#FDFAF5] text-[#2C1F0E] text-sm focus-within:border-[#C9A96E] transition-colors">
-                        <TimeField.Input>
-                          {(segment) => (
-                            <TimeField.Segment
-                              segment={segment}
-                              className="text-[#2C1F0E] focus:bg-[#F5EDD8] focus:rounded px-0.5 outline-none"
-                            />
-                          )}
-                        </TimeField.Input>
-                      </TimeField.Group>
-                      <Description className="text-xs text-[#B0A898] mt-1">
-                        Enter end hour
-                      </Description>
-                    </TimeField>
+
+                    {/* Arrow */}
+                    <div className="flex items-center justify-center">
+                      <span className="text-[#C9A96E] font-bold text-xl">↓</span>
+                    </div>
+
+                    {/* End Time */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Clock className="size-4 text-[#9C7E57]" />
+                        <span className="text-sm font-semibold text-[#3B2F1E]">
+                          End Time
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <select
+                          value={endTime}
+                          onChange={(e) => setEndTime(e.target.value)}
+                          disabled={!startTime}
+                          className="w-full appearance-none px-4 py-3 rounded-xl border border-[#DDD5C4] bg-[#FDFAF5] text-[#2C1F0E] text-sm focus:outline-none focus:border-[#C9A96E] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <option value="" disabled>Select end time</option>
+                          {getEndTimeOptions().map((slot) => (
+                            <option key={slot} value={slot}>{slot}</option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#9C7E57]">
+                          ▾
+                        </div>
+                      </div>
+                      {!startTime && (
+                        <p className="text-xs text-[#B0A898]">
+                          Select start time first
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Summary */}
+                    {totalHours && (
+                      <div className="bg-[#F5EDD8] rounded-xl px-4 py-3 text-center">
+                        <p className="text-xs text-[#9C7E57]">Duration</p>
+                        <p className="text-lg font-bold text-[#2C1F0E]">
+                          {startTime} → {endTime}
+                        </p>
+                        <p className="text-sm text-[#C9A96E] font-semibold">
+                          {totalHours} hr{totalHours > 1 ? "s" : ""} · ${totalCost}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                
-                {startTime && endTime && endTime.hour <= startTime.hour && (
-                  <p className="text-xs text-red-500 bg-red-50 px-4 py-2 rounded-lg border border-red-100">
-                    End time must be after start time.
-                  </p>
-                )}
               </Modal.Body>
 
               {/* Footer */}
@@ -271,13 +341,7 @@ const BookNowModal = ({ data }) => {
                 </Button>
                 <Button
                   onClick={handleBooking}
-                //   slot="close"
-                  isDisabled={
-                    !bookingDate ||
-                    !startTime ||
-                    !endTime ||
-                    endTime.hour <= startTime.hour
-                  }
+                  isDisabled={!bookingDate || !startTime || !endTime}
                   className="flex-1 bg-[#2C1F0E] text-[#F5EDD8] font-semibold rounded-xl hover:bg-[#3D2B13] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Confirm Booking

@@ -37,7 +37,7 @@ export function BookingDataDelete({ bookingId }) {
   return (
     <AlertDialog>
       <AlertDialog.Trigger>
-        <Button variant="danger">Delete</Button>
+        <Button variant="danger">Cancel</Button>
       </AlertDialog.Trigger>
 
       <AlertDialog.Backdrop
@@ -50,12 +50,12 @@ export function BookingDataDelete({ bookingId }) {
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />
               <AlertDialog.Heading>
-                Delete your room permanently?
+                Want to cancel your room ?
               </AlertDialog.Heading>
             </AlertDialog.Header>
             <AlertDialog.Body>
               <p>
-                This will permanently delete this booking and all of its data.
+                This will cancel this booking and all of its data.
                 This action cannot be undone.
               </p>
             </AlertDialog.Body>
