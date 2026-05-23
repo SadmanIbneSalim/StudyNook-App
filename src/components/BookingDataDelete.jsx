@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { AlertDialog, Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,8 +13,10 @@ export function BookingDataDelete({ bookingId }) {
   const handleDelete = async (closeModal) => {
     setIsDeleting(true);
     try {
+      const {data:tokenData}=await authClient.token();
       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
         method: "DELETE",
+        headers:{"Authorization": `Bearer ${tokenData?.token}`}
       });
 
       if (res.ok) {

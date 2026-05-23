@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { CloudArrowUpIn, PencilToSquare, Plus } from "@gravity-ui/icons";
 import {
   Button,
@@ -39,9 +40,11 @@ export function ModalForm({ data }) {
   const newRoom = { ...formData, amenities };
 
   try {
+
+    const {data:tokenData}=await authClient.token();
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${data._id}`, {
       method: "PATCH",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json","authorization":`Bearer ${tokenData?.token}` },
       body: JSON.stringify(newRoom),
     });
     const result = await res.json();

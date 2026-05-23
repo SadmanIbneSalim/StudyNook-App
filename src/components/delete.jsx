@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import {AlertDialog, Button} from "@heroui/react";
 import { redirect } from "next/navigation";
 // import { useRouter } from "next/navigation";
@@ -10,9 +11,10 @@ export  function DeleteData ({data}) {
   // const router = useRouter()
 
      const handleDelete =async()=>{
-
+const {data:tokenData}=await authClient.token();
 const res= await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${data._id}`,{
-    method: "DELETE"
+    method: "DELETE",
+    headers:{"Authorization": `Bearer ${tokenData?.token}`}
 });
 const roomData=await res.json();
 
