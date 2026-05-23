@@ -17,7 +17,8 @@ const MyBookings = async () => {
     cache: "no-store",
     headers:{Authorization: `Bearer ${token}`}
   });
-  const bookings = await res.json();
+  const data = await res.json();
+const bookings = Array.isArray(data) ? data : [];
 
   return (
     <div className="bg-[#F5EDD8] min-vh-70 py-10 px-4">

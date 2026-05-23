@@ -23,7 +23,8 @@ const MyListing = async () => {
      
     
   );
-  const myRooms = await res.json();
+  const data = await res.json();
+const myRooms = Array.isArray(data) ? data : [];
 
   return (
     <div className="bg-[#F5EDD8] min-h-screen py-10 px-4">
