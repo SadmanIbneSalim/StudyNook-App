@@ -8,36 +8,42 @@ import { toast } from "react-toastify";
 
 export function BookingDataDelete({ bookingId }) {
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
 
-  const handleDelete = async (closeModal) => {
-    setIsDeleting(true);
+  const handleCancel = async () => {
+    setIsCancelling(true);
     try {
-      const {data:tokenData}=await authClient.token();
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
-        method: "DELETE",
-        headers:{"Authorization": `Bearer ${tokenData?.token}`}
-      });
+      const { data: tokenData } = await authClient.token();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}/cancel`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${tokenData?.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "cancelled" }),
+        }
+      );
 
       if (res.ok) {
-        if (typeof closeModal === "function") closeModal();
-        toast.success("Booking deleted successfully!"); 
-
+        toast.success("Booking cancelled successfully!");
         router.refresh();
       } else {
-        console.error("Delete failed");
+        const errData = await res.json();
+        toast.error(errData?.message || "Failed to cancel booking.");
       }
     } catch (error) {
-      console.error("Error deleting booking:", error);
+      toast.error("Something went wrong. Try again.");
     } finally {
-      setIsDeleting(false);
+      setIsCancelling(false);
     }
   };
 
   return (
     <AlertDialog>
       <AlertDialog.Trigger>
-        <Button variant="danger">Cancel</Button>
+        <Button variant="danger">Cancel Booking</Button>
       </AlertDialog.Trigger>
 
       <AlertDialog.Backdrop
@@ -49,28 +55,26 @@ export function BookingDataDelete({ bookingId }) {
             <AlertDialog.CloseTrigger />
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />
-              <AlertDialog.Heading>
-                Want to cancel your room ?
-              </AlertDialog.Heading>
+              <AlertDialog.Heading>Cancel your booking?</AlertDialog.Heading>
             </AlertDialog.Header>
             <AlertDialog.Body>
               <p>
-                This will cancel this booking and all of its data.
-                This action cannot be undone.
+                Are you sure you want to cancel this booking? This action cannot
+                be undone.
               </p>
             </AlertDialog.Body>
             <AlertDialog.Footer>
-              <Button slot="close" variant="tertiary" disabled={isDeleting}>
-                Cancel
+              <Button slot="close" variant="tertiary" disabled={isCancelling}>
+                Go Back
               </Button>
 
               <Button
-                onClick={() => handleDelete()}
+                onClick={handleCancel}
                 slot="close"
                 variant="danger"
-                disabled={isDeleting}
+                disabled={isCancelling}
               >
-                {isDeleting ? "Deleting..." : "Delete Booking"}
+                {isCancelling ? "Cancelling..." : "Yes, Cancel Booking"}
               </Button>
             </AlertDialog.Footer>
           </AlertDialog.Dialog>
