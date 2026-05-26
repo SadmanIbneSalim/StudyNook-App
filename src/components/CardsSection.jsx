@@ -4,10 +4,12 @@ import { MdOutlineArrowRightAlt } from "react-icons/md";
 
 const CardsSection = async () => {
  
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`, { cache: "no-store" ,});
-    const roomData = await res.json();
+   const res = await fetch(
+  `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms?latest=true`,
+  { cache: "no-store" }
+);
 
-    const latestRooms = [...roomData].reverse().slice(0, 6);
+    const latestRooms = await res.json();
 
     return (
         <div className="bg-[#F5EDD8] pb-10">
