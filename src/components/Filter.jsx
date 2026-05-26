@@ -51,7 +51,7 @@ const RoomFilter = () => {
     }
   }, [search, sort, activeAmenities, minRate, maxRate]);
 
-  // search এ debounce — user টাইপ করার সাথে সাথে API call না করে 500ms পর করবে
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchRooms();

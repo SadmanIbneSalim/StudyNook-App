@@ -6,14 +6,10 @@ import React from "react";
 export const metadata = {
   title: "StudyNook | Browse Available Study Rooms",
   description:
-    "Explore study rooms with different capacities, amenities, and pricing. Filter rooms by facilities, floor, and availability to find your perfect study space."
+    "Explore study rooms with different capacities, amenities, and pricing. Filter rooms by facilities, floor, and availability to find your perfect study space.",
 };
 
-const RoomPage = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms`);
-  const roomData = await res.json();
-  console.log(roomData);
-
+const RoomPage = () => {
   return (
     <div className="bg-[#F5EDD8]">
       <div className="max-w-7xl mx-auto ">
@@ -24,7 +20,7 @@ const RoomPage = async () => {
           Browse all available rooms across the library
         </h1>
 
-        <RoomFilter roomData={roomData} />
+        <RoomFilter />
 
         {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pt-5 gap-3">
                { 
