@@ -7,6 +7,7 @@ import {
   Separator,
 } from "@heroui/react";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 const Banner = () => {
   return (
@@ -47,7 +48,8 @@ const Banner = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
           >
-            Explore Now
+            <Link href={"/rooms"}>Explore Now</Link>
+            
           </motion.button>
 
           <motion.button
@@ -55,7 +57,8 @@ const Banner = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.96 }}
           >
-            View Rooms
+             <Link href={"/rooms"}>View Rooms</Link>
+            
           </motion.button>
         </motion.div>
       </div>
