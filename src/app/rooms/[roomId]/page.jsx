@@ -20,10 +20,10 @@ export default async function DetailsPage({ params }) {
     headers: await headers(),
   });
 
-  const { token } = await auth.api.getToken({
-    headers: await headers(),
-  });
-  console.log(token);
+  // const { token } = await auth.api.getToken({
+  //   headers: await headers(),
+  // });
+ 
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${roomId}`,
@@ -31,7 +31,7 @@ export default async function DetailsPage({ params }) {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        
       },
     },
   );
@@ -81,6 +81,21 @@ export default async function DetailsPage({ params }) {
                 / Hour
               </span>
             </p>
+
+            <div className=" bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
+              
+              <div>
+                <p className="text-xs text-gray-500 font-medium">
+                  Total Bookings
+                </p>
+                <p className="text-2xl font-bold text-orange-500">
+                  {data.bookingCount ?? 0}
+                  <span className="text-sm font-normal text-gray-400 ml-1">
+                    times booked
+                  </span>
+                </p>
+              </div>
+            </div>
 
             {/* Divider */}
             <div className="w-full h-px bg-[#d4c4a8]" />

@@ -3,8 +3,9 @@
 import { authClient } from "@/lib/auth-client";
 import { Clock, Rocket } from "@gravity-ui/icons";
 import { Button, Calendar, Modal } from "@heroui/react";
-import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
+import { today, getLocalTimeZone } from "@internationalized/date";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const TIME_SLOTS = [
@@ -26,6 +27,7 @@ const timeToHour = (timeStr) => {
 const BookNowModal = ({ data }) => {
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  const router = useRouter();
 
   const todayDate = today(getLocalTimeZone());
   const currentHour = new Date().getHours();
@@ -33,20 +35,17 @@ const BookNowModal = ({ data }) => {
   const [bookingDate, setBookingDate] = useState(todayDate);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const isToday = bookingDate
     ? bookingDate.toString() === todayDate.toString()
     : false;
 
-  // If today is selected, disable past + current hour slots
   const isSlotDisabled = (slot) => {
     if (!isToday) return false;
     const slotHour = timeToHour(slot);
     return slotHour <= currentHour;
   };
-
-  const getAvailableStartSlots = () =>
-    TIME_SLOTS.filter((slot) => !isSlotDisabled(slot));
 
   const getEndTimeOptions = () => {
     if (!startTime) return [];
@@ -66,6 +65,15 @@ const BookNowModal = ({ data }) => {
     setBookingDate(date);
     setStartTime("");
     setEndTime("");
+  };
+
+  
+  const handleOpenModal = () => {
+    if (!user) {
+      router.push(`/authentication/signin?callbackUrl=/rooms/${data?._id}`);
+      return;
+    }
+    setIsOpen(true);
   };
 
   const handleBooking = async () => {
@@ -109,14 +117,16 @@ const BookNowModal = ({ data }) => {
 
     if (res.ok) {
       toast.success("Room booked successfully!", { position: "top-center" });
-      document.querySelector("[data-slot='close-trigger']")?.click();
+      setIsOpen(false);
+      router.refresh(); 
     }
   };
 
   return (
     <div>
-      <Modal>
+      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
         <Button
+          onPress={handleOpenModal}
           className="w-full font-bold text-[#F5EDD8] bg-[#2C1F0E] hover:bg-[#3D2B13] transition-all duration-200"
           size="lg"
           radius="md"
@@ -334,13 +344,13 @@ const BookNowModal = ({ data }) => {
               {/* Footer */}
               <Modal.Footer className="border-t border-[#EDE5D8] pt-4 flex gap-3">
                 <Button
-                  slot="close"
+                  onPress={() => setIsOpen(false)}
                   className="flex-1 border border-[#DDD5C4] bg-transparent text-[#2C1F0E] font-semibold rounded-xl hover:bg-[#F5EDD8] transition-colors"
                 >
                   Cancel
                 </Button>
                 <Button
-                  onClick={handleBooking}
+                  onPress={handleBooking}
                   isDisabled={!bookingDate || !startTime || !endTime}
                   className="flex-1 bg-[#2C1F0E] text-[#F5EDD8] font-semibold rounded-xl hover:bg-[#3D2B13] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
